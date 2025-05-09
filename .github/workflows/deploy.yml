@@ -1,10 +1,9 @@
-name: Deploy Dataflow Pipeline
+name: Deploy Dataflow Streaming Pipeline (Classic Template)
 
 on:
   push:
     branches:
-      - main  # Adjust the branch as needed
-
+      - main
 
 jobs:
   deploy:
@@ -34,8 +33,8 @@ jobs:
         with:
           project_id: airy-actor-457907-a8
           install_components: 'beta'
-          
-      - name: Deploy Dataflow Pipeline
+
+      - name: Build Classic Template (Hardcoded Pipeline)
         run: |
           python dataflow_pipeline.py \
             --runner=DataflowRunner \
@@ -43,4 +42,10 @@ jobs:
             --region=us-central1 \
             --temp_location=gs://raw-bucket-1/temp \
             --staging_location=gs://raw-bucket-1/staging \
-            > dataflow_log.txt 2>&1 &
+            --template_location=gs://raw-bucket-1/templates/streaming_template
+
+      - name: Launch Streaming Job from Template
+        run: |
+          gcloud dataflow jobs run "streaming-job-$(date +%s)" \
+            --gcs-location=gs://raw-bucket-1/templates/streaming_template \
+            --region=us-central1
