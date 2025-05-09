@@ -5,6 +5,7 @@ on:
     branches:
       - main  # Adjust the branch as needed
 
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -33,7 +34,7 @@ jobs:
         with:
           project_id: airy-actor-457907-a8
           install_components: 'beta'
-
+          
       - name: Deploy Dataflow Pipeline
         run: |
           python dataflow_pipeline.py \
@@ -41,4 +42,5 @@ jobs:
             --project=airy-actor-457907-a8 \
             --region=us-central1 \
             --temp_location=gs://raw-bucket-1/temp \
-            --staging_location=gs://raw-bucket-1/staging
+            --staging_location=gs://raw-bucket-1/staging \
+            > dataflow_log.txt 2>&1 &
